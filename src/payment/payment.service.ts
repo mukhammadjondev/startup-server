@@ -80,8 +80,25 @@ export class PaymentService {
       payment_behavior: 'default_incomplete',
       expand: ['latest_invoice.payment_intent'],
       default_payment_method: card.id,
+      trial_period_days: 14,
     });
-    // @ts-ignore
-    return subscription.latest_invoice.payment_intent.client_secret;
+    return subscription;
+  }
+
+  async instructorBalance(instructorAccountId: string) {
+    const balances = await this.stripeClient.balance.retrieve({
+      stripeAccount: instructorAccountId,
+    });
+    return balances;
+  }
+
+  async instructorConnectLogin(instructorAccountId: string) {
+    const loginLink =
+      await this.stripeClient.accounts.createLoginLink(instructorAccountId);
+    return loginLink.url;
+  }
+
+  async applyCoupon(id: string) {
+    return await this.stripeClient.coupons.retrieve(id);
   }
 }

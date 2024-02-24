@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { User } from 'src/user/decorators/user.decorator';
 import { PaymentBooksDto } from './dto/payment-books';
@@ -34,5 +34,28 @@ export class PaymentController {
   @Auth('USER')
   createSubscription(@Body() dto: PaymentBooksDto, @User('_id') _id: string) {
     return this.paymentService.createSubscription(dto, _id);
+  }
+
+  @HttpCode(200)
+  @Get('instructor-balance')
+  @Auth('INSTRUCTOR')
+  instructorBalance(@User('instructorAccountId') instructorAccountId: string) {
+    return this.paymentService.instructorBalance(instructorAccountId);
+  }
+
+  @HttpCode(200)
+  @Post('instructor-connect-login')
+  @Auth('INSTRUCTOR')
+  instructorConnectLogin(
+    @User('instructorAccountId') instructorAccountId: string,
+  ) {
+    return this.paymentService.instructorConnectLogin(instructorAccountId);
+  }
+
+  @HttpCode(200)
+  @Get('apply-coupon/:id')
+  @Auth('USER')
+  applyCoupon(@Param('id') id: string) {
+    return this.paymentService.applyCoupon(id);
   }
 }
