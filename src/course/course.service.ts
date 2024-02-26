@@ -7,6 +7,7 @@ import {
 } from 'src/instructor/instructor.model';
 import { CourseBodyDto } from './course.dto';
 import { Course, CourseDocument } from './course.model';
+import { User, UserDocument } from 'src/user/user.model';
 
 @Injectable()
 export class CourseService {
@@ -14,6 +15,7 @@ export class CourseService {
     @InjectModel(Course.name) private courseModel: Model<CourseDocument>,
     @InjectModel(Instructor.name)
     private instructorModel: Model<InstructorDocument>,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
   async createCourse(dto: CourseBodyDto, id: string) {
@@ -81,6 +83,16 @@ export class CourseService {
     return courses.map((course) => this.getSpecificFieldCourse(course));
   }
 
+  async getDetailedCourse(slug: string) {
+    const course = await this.courseModel
+      .findOne({ slug })
+      .populate({ path: 'sections', populate: { path: 'lessons' } })
+      .populate('author')
+      .exec();
+
+    return this.getSpecificFieldCourse(course);
+  }
+
   getSpecificFieldCourse(course: CourseDocument) {
     return {
       _id: course._id,
@@ -92,7 +104,15 @@ export class CourseService {
       author: {
         fullName: course.author.fullName,
         avatar: course.author.avatar,
+        job: course.author.job,
       },
+      updatedAt: course.updatedAt,
+      learn: course.learn,
+      requirements: course.requirements,
+      description: course.description,
+      language: course.language,
+      excerpt: course.excerpt,
+      slug: course.slug,
       lessonCount: course.sections
         .map((c) => c.lessons.length)
         .reduce((a, b) => +a + +b, 0),
@@ -124,5 +144,15 @@ export class CourseService {
 
   async getAdminCourses() {
     return this.courseModel.find().exec();
+  }
+
+  async enrollUser(userId: string, courseId: string) {
+    await this.userModel.findByIdAndUpdate(
+      userId,
+      { $push: { courses: courseId } },
+      { new: true },
+    );
+
+    return 'Success';
   }
 }
