@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   Param,
   Post,
@@ -17,26 +18,23 @@ export class ReviewController {
 
   @Post('create')
   @HttpCode(201)
-  @Auth()
   createReview(@Body() dto: CreateReviewDto) {
     return this.reviewService.createReview(dto);
   }
 
-  @Delete('delete/reviewId')
+  @Delete('delete/:reviewId')
   @HttpCode(200)
-  @Auth()
   deleteReview(@Param('reviewId') reviewId: string) {
     return this.reviewService.deleteReview(reviewId);
   }
 
   @Put('edit/:reviewId')
   @HttpCode(200)
-  @Auth()
   editReview(@Param('reviewId') reviewId: string, @Body() dto: EditReviewDto) {
     return this.reviewService.editReview(reviewId, dto);
   }
 
-  @Post('get/:courseId')
+  @Get('get/:courseId')
   @HttpCode(200)
   getReview(@Param('courseId') courseId: string) {
     return this.reviewService.getReview(courseId);
