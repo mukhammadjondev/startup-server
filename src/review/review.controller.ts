@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { Auth } from 'src/auth/decorators/auth.decorator';
-import { CreateReviewDto, EditReviewDto } from './dto/review.dto';
+import { CreateReviewDto, EditReviewDto, GetByUserDto } from './dto/review.dto';
 
 @Controller('review')
 export class ReviewController {
@@ -36,7 +36,13 @@ export class ReviewController {
 
   @Get('get/:courseId')
   @HttpCode(200)
-  getReview(@Param('courseId') courseId: string) {
-    return this.reviewService.getReview(courseId);
+  getReviews(@Param('courseId') courseId: string) {
+    return this.reviewService.getReviews(courseId);
+  }
+
+  @Post('get-by-user')
+  @HttpCode(200)
+  getByUser(@Body() dto: GetByUserDto) {
+    return this.reviewService.getByUser(dto);
   }
 }
