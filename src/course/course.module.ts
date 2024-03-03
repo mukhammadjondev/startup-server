@@ -5,16 +5,18 @@ import { User, UserSchema } from 'src/user/user.model';
 import { CourseController } from './course.controller';
 import { Course, CourseSchema } from './course.model';
 import { CourseService } from './course.service';
+import { Review, ReviewSchema } from 'src/review/review.model';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      {name: User.name, schema: UserSchema},
-      {name: Course.name, schema: CourseSchema},
-      {name: Instructor.name, schema: InstructorSchema},
+      { name: User.name, schema: UserSchema },
+      { name: Course.name, schema: CourseSchema },
+      { name: Instructor.name, schema: InstructorSchema },
+      { name: Review.name, schema: ReviewSchema },
     ]),
   ],
   controllers: [CourseController],
-  providers: [CourseService]
+  providers: [CourseService],
 })
 export class CourseModule {}
