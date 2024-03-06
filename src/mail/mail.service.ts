@@ -11,6 +11,7 @@ import { Model } from 'mongoose';
 import { Books, BooksDocument } from 'src/books/books.model';
 import { User, UserDocument } from 'src/user/user.model';
 import { Otp, OtpDocument } from './otp.model';
+import { ContactUsDto } from './mail.dto';
 
 @Injectable()
 export class MailService {
@@ -82,6 +83,22 @@ export class MailService {
       subject: 'Ordered book',
       from: 'djwandwauncjsnadwa@gmail.com',
       html: `<a href="${book.pdf}">Your ordered book - ${book.title}</a>`,
+    };
+
+    await SendGrid.send(emailData);
+    return 'Success';
+  }
+
+  async contactUs(dto: ContactUsDto) {
+    const emailData = {
+      to: 'muhsdev@gmail.com',
+      subject: 'Contact Us',
+      from: 'djwandwauncjsnadwa@gmail.com',
+      html: `
+        <div>Name: ${dto.name}</div>
+        <div>Email: ${dto.email}</div>
+        <div>Message: ${dto.message}</div>
+      `,
     };
 
     await SendGrid.send(emailData);

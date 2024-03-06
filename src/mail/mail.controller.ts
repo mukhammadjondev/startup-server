@@ -2,6 +2,7 @@ import { Body, Controller, Post, HttpCode, Param } from '@nestjs/common';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { User } from 'src/user/decorators/user.decorator';
 import { MailService } from './mail.service';
+import { ContactUsDto } from './mail.dto';
 
 @Controller('mail')
 export class MailController {
@@ -24,5 +25,11 @@ export class MailController {
   @Auth('USER')
   recieveBooks(@Param('bookId') bookId: string, @User('_id') _id: string) {
     return this.mailService.recieveBooks(bookId, _id);
+  }
+
+  @HttpCode(200)
+  @Post('contact-us')
+  contactUs(@Body() dto: ContactUsDto) {
+    return this.mailService.contactUs(dto);
   }
 }

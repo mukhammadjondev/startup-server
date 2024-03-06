@@ -38,7 +38,7 @@ export class CustomerService {
     const { customerId } = user;
 
     if (!customerId) {
-      this.createCustomer(userId);
+      return this.createCustomer(userId);
     }
 
     const customer = await this.stripeClient.customers.retrieve(customerId);
